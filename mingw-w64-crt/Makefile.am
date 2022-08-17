@@ -489,6 +489,8 @@ src_msvcr120_app=\
 
 # These mingwex sources are target independent:
 src_libmingwex=\
+  cfguard/mingw_cfguard_support.c \
+  \
   crt/dllentry.c        crt/dllmain.c \
   \
   complex/_cabs.c    complex/cabs.c   complex/cabsf.c   complex/cabsl.c   complex/cacos.c   complex/cacosf.c   \
@@ -642,6 +644,22 @@ src_libmingwexarm64=\
   math/arm64/rint.c         math/arm64/rintf.c \
   math/arm64/sincos.S       math/arm64/sincosf.S \
   math/arm-common/ldexpl.c
+
+# this goes into the 32 bit x86 version:
+src_libmingwex32+=\
+  cfguard/mingw_cfguard_loadcfg_32.S
+
+# this goes into the 64 bit x86 version:
+src_libmingwex64+=\
+  cfguard/mingw_cfguard_loadcfg_64.S
+
+# this goes into the ARM32 version:
+src_libmingwexarm32+=\
+  cfguard/mingw_cfguard_loadcfg_32.S
+
+# this goes into the ARM64 version:
+src_libmingwexarm64+=\
+  cfguard/mingw_cfguard_loadcfg_64.S
 
 
 # These intrinsics are target independent:
