@@ -1,5 +1,6 @@
         .section .rdata,"dr"
         .globl _load_config_used
+        .balign 4
 _load_config_used:
         .4byte _load_config_used__end - _load_config_used /* Size */
         .4byte 0 /* TimeDateStamp */
