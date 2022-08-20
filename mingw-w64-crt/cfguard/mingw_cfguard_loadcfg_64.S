@@ -1,5 +1,5 @@
         .section .rdata,"dr"
-        .globl _load_config_used
+        .weak _load_config_used
         .balign 8
 _load_config_used:
         .4byte _load_config_used__end - _load_config_used /* Size */
@@ -23,7 +23,13 @@ _load_config_used:
         .8byte 0 /* SEHandlerTable */
         .8byte 0 /* SEHandlerCount */
         .8byte __guard_check_icall_fptr /* GuardCFCheckFunction */
+#if defined(__x86_64__)
         .8byte __guard_dispatch_icall_fptr /* GuardCFCheckDispatch */
+#else
+        /* GuardCFCheckDispatch should be set to 0 outside of x86_64. */
+        /* Ref: https://docs.microsoft.com/en-us/windows/win32/secbp/pe-metadata */
+        .8byte 0 /* GuardCFCheckDispatch */
+#endif
         .8byte __guard_fids_table /* GuardCFFunctionTable */
         .8byte __guard_fids_count /* GuardCFFunctionCount */
         .4byte __guard_flags /* GuardFlags */

@@ -5,7 +5,7 @@
 #endif
 
         .section .rdata,"dr"
-        .globl SYM(_load_config_used)
+        .weak SYM(_load_config_used)
         .balign 4
 SYM(_load_config_used):
         .4byte SYM(_load_config_used__end) - SYM(_load_config_used) /* Size */
@@ -29,7 +29,11 @@ SYM(_load_config_used):
         .4byte 0 /* SEHandlerTable */
         .4byte 0 /* SEHandlerCount */
         .4byte SYM(__guard_check_icall_fptr) /* GuardCFCheckFunction */
-        .4byte SYM(__guard_dispatch_icall_fptr) /* GuardCFCheckDispatch */
+        /*
+        GuardCFCheckDispatch should be set to 0 outside of x86_64.
+        Ref: https://docs.microsoft.com/en-us/windows/win32/secbp/pe-metadata
+        */
+        .4byte 0 /* GuardCFCheckDispatch */
         .4byte SYM(__guard_fids_table) /* GuardCFFunctionTable */
         .4byte SYM(__guard_fids_count) /* GuardCFFunctionCount */
         .4byte SYM(__guard_flags) /* GuardFlags */

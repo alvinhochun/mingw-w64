@@ -11,13 +11,14 @@ static void __guard_check_icall_dummy() {
 
 // When CFGuard is not supported, directly tail-call the target address, which
 // is passed via %rax.
-// This is intentionally declared as _not_ a function pointer, so that Clang
-// does not mark the jmp instruction as a valid call target for CFGuard.
-extern void *__guard_dispatch_icall_dummy;
 __asm__(
     "__guard_dispatch_icall_dummy:\n"
     "    jmp *%rax\n"
 );
+
+// This is intentionally declared as _not_ a function pointer, so that the
+// jmp instruction is not included as a valid call target for CFGuard.
+extern void *__guard_dispatch_icall_dummy;
 
 #elif defined(__i386__) || defined(__aarch64__) || defined(__arm__)
 
@@ -28,10 +29,7 @@ static void __guard_check_icall_dummy() {
 }
 
 static void __guard_dispatch_icall_dummy() {
-    // When CFGuard is not supported, this should directly tail-call the target
-    // address, however it is not specified how on x86, aarch64 and arm because
-    // __guard_check_icall_fptr is used instead.
-    // This really shouldn't be reached.
+    // This is not used outside of x86_64.
     __builtin_trap();
 }
 
