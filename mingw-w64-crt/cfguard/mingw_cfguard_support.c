@@ -1,13 +1,10 @@
 #if defined(__x86_64__)
 
-static void __guard_check_icall_dummy() {
-    // The target address is passed as a parameter in an arch-specific manner,
-    // however it is not specified how on x86_64 because
-    // __guard_dispatch_icall_fptr is used instead.
-    // My guess would be that it's passed on %rcx, but it doesn't really matter
-    // here because this is a no-op anyway.
-}
-
+// The target address is passed as a parameter in an arch-specific manner,
+// however it is not specified how on x86_64 because __guard_dispatch_icall_fptr
+// is used instead. My guess would be that it's passed on %rcx, but it doesn't
+// really matter here because this is a no-op anyway.
+static void __guard_check_icall_dummy(void) {}
 
 // When CFGuard is not supported, directly tail-call the target address, which
 // is passed via %rax.
@@ -22,17 +19,20 @@ extern void *__guard_dispatch_icall_dummy;
 
 #elif defined(__i386__) || defined(__aarch64__) || defined(__arm__)
 
-static void __guard_check_icall_dummy() {
-    // The target address is passed via %ecx (x86), X15 (aarch64) or R0 (arm).
-}
+// The target address is passed via %ecx (x86), X15 (aarch64) or R0 (arm),
+// but it doesn't really matter here because this is a no-op anyway.
+static void __guard_check_icall_dummy(void) {}
 
 #else
 #   error "CFGuard support is unimplemented for the current architecture."
 #endif
 
 // I am not sure about the `.00cfg` section. This is just an attempt to follow
-// what VC runtime defines. The MSVC linker appears to merge this section into
+// what VC runtime defines -- it places all the guard check function pointers
+// inside this section. The MSVC linker appears to merge this section into
 // `.rdata`, but LLD does not do this at the time of writing.
+// This section should be readonly data. The only thing that modifies these
+// pointers is the PE image loader.
 
 __asm__(".section .00cfg,\"dr\"");
 
